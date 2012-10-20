@@ -4,7 +4,7 @@ Created on Oct 19, 2012
 @author: igor
 '''
 
-class Subtitle(object):
+class SubtitleDelta(object):
     '''
     classdocs
     '''
@@ -25,14 +25,17 @@ class Subtitle(object):
         self.end -= delta
     
     def __str__(self):
-        return '%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d' % (Subtitle.hours(self.start),
-                                               Subtitle.minutes(self.start),
-                                               Subtitle.seconds(self.start),
-                                               Subtitle.milliseconds(self.start),
-                                               Subtitle.hours(self.end),
-                                               Subtitle.minutes(self.end),
-                                               Subtitle.seconds(self.end),
-                                               Subtitle.milliseconds(self.end))
+        return '%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d' % (SubtitleDelta.hours(self.start),
+                                          SubtitleDelta.minutes(self.start),
+                                          SubtitleDelta.seconds(self.start),
+                                          SubtitleDelta.milliseconds(self.start),
+                                          SubtitleDelta.hours(self.end),
+                                          SubtitleDelta.minutes(self.end),
+                                          SubtitleDelta.seconds(self.end),
+                                          SubtitleDelta.milliseconds(self.end))
+    
+    def __eq__(self, other):
+        return self.start.total_seconds() == other.start.total_seconds() and self.end.total_seconds() == other.end.total_seconds()
     
     @classmethod
     def hours(cls, delta):
@@ -48,4 +51,5 @@ class Subtitle(object):
     
     @classmethod
     def milliseconds(cls, delta):
-        return int((delta.total_seconds() - cls.hours(delta)*3600 - cls.minutes(delta)*60 - cls.seconds(delta))*1000)
+        mills = round(delta.total_seconds() - cls.hours(delta)*3600 - cls.minutes(delta)*60 - cls.seconds(delta), 3)
+        return int(mills*1000)
